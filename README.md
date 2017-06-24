@@ -7,6 +7,8 @@ This is the Raspberry Pi server component that activates a relay switch to "pres
 
 There are [Android](https://github.com/skim1420/open-doors-android) and [iOS](https://github.com/skim1420/open-doors-ios) client apps, which are single-button app that send the signed HTTP request.
 
+This python script runs as cgi-bin behind apache.
+
 You need to add a keys.json file with the following format:
 
 ```json
