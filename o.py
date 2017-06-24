@@ -1,36 +1,40 @@
 #!/usr/bin/python
 import datetime
 import hashlib
+import json
 import logging
 import os
 import time
-
-""" Replace keys set below with your own client/secret sets.
-    You can just go to any random string generator website to get your keys. """
-
-keys = {
-    'client1' : ('User 1', 'secret1'),
-    'client2' : ('User 2', 'secret2'),
-    'client3' : ('User 3', 'secret3')
-}
+from subprocess import call
 
 print "Content-type: text/html"
 print
 
-def getHashedKey(client):
+def generate_hashstring(user):
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d-%H')
-    hashbase = client + '&' + keys[client][1] + '&' + timestamp
+    hashbase = user['client'] + '&' + user['secret'] + '&' + timestamp
     m = hashlib.md5()
     m.update(hashbase)
     return m.hexdigest()
+
+def open_door(user):
+    logging.error(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S ') + user['name'] + ' is home!')
+    call(["sudo", "/usr/lib/cgi-bin/od.py"])
+
+def get_user(client):
+    with open('keys.json') as keys_file:
+        keys = json.load(keys_file)
+    for key in keys:
+        if key['client'] == client:
+            return key
+    return none
 
 auth = os.environ['HTTP_X_OD']
 auth_components = auth.split('&')
 client = auth_components[0]
 hashstring = auth_components[1]
-
-if hashstring == getHashedKey(client):
-# RPi.GPIO requries root /dev/mem access
-    call(["sudo", "/usr/lib/cgi-bin/od.py"])
+user = get_user(client)
+if user and (hashstring == generate_hashstring(user)):
+    open_door(user)
 else:
     logging.error('An imposter has been stopped!')

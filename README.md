@@ -6,3 +6,15 @@ OpenDoors is a small project I cooked up to open my pre-war NYC building main do
 This is the Raspberry Pi server component that activates a relay switch to "press the buzzer" on my intercom. It takes signed HTTP requests to enact the switch.
 
 There are [Android](https://github.com/skim1420/open-doors-android) and [iOS](https://github.com/skim1420/open-doors-ios) client apps, which are single-button app that send the signed HTTP request.
+
+You need to add a keys.json file with the following format:
+
+```json
+[
+  {
+    "name": "Jack",
+    "client": "client1string",
+    "secret": "secret1string"
+  },
+  ...
+]
